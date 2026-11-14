@@ -2,7 +2,7 @@ function ArtistCard({ artist }) {
   return (
     <article className="artist-card">
       {artist.artist_name === "The Illusionz" && (
-        <img src="/images/the-illusionz-2.png" alt="The Illusionz cover art" />
+        <img src="/images/the-illusionz-4.png" alt="The Illusionz cover art" />
       )}
 
       {artist.artist_name?.trim().toLowerCase() === "0nce0nfire" && (

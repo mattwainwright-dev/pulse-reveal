@@ -35,6 +35,21 @@ function App() {
                   <ArtistCard key={artist.id} artist={artist} />
                 ))}
           </div>
+
+          <h2>Explore All Artists</h2>
+
+          <p>{artists.length} artists in the PULSE catalog</p>
+
+          <div className="artist-grid">
+            {artists
+              .filter(
+                (artist) =>
+                  !["The Illusionz", "0nce0nFire"].includes(artist.artist_name),
+              )
+              .map((artist) => (
+                <ArtistCard key={artist.id} artist={artist} />
+              ))}
+          </div>
         </section>
       </main>
     </div>
