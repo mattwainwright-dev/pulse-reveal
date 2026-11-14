@@ -1,5 +1,6 @@
 import "./App.css";
 import { useTable } from "./hooks/useTable";
+import ArtistCard from "./components/ArtistCard";
 
 function App() {
   const { data: artists, loading, error } = useTable("artists");
@@ -23,16 +24,32 @@ function App() {
           {!loading && !error && artists.length === 0 && (
             <p>No artists available yet.</p>
           )}
+          <div className="artist-grid">
+            {!loading &&
+              !error &&
+              artists
+                .filter((artist) =>
+                  ["The Illusionz", "0nce0nFire"].includes(artist.artist_name),
+                )
+                .map((artist) => (
+                  <ArtistCard key={artist.id} artist={artist} />
+                ))}
+          </div>
 
-          {!loading &&
-            !error &&
-            artists.map((artist) => (
-              <div key={artist.id}>
-                <h3>{artist.artist_name}</h3>
-                <p>{artist.genre}</p>
-                <p>{artist.bio}</p>
-              </div>
-            ))}
+          <h2>Explore All Artists</h2>
+
+          <p>{artists.length} artists in the PULSE catalog</p>
+
+          <div className="artist-grid">
+            {artists
+              .filter(
+                (artist) =>
+                  !["The Illusionz", "0nce0nFire"].includes(artist.artist_name),
+              )
+              .map((artist) => (
+                <ArtistCard key={artist.id} artist={artist} />
+              ))}
+          </div>
         </section>
       </main>
     </div>
