@@ -1,4 +1,3 @@
-
 # PULSE — Reveal
 
 **Bring Music To Your Life.**
@@ -14,6 +13,7 @@ PULSE is a music discovery and community platform designed to bring artists and 
 **Primary User:** Music lovers who enjoy discovering new artists and exploring different genres.
 
 **Goals:**
+
 - Discover independent and established artists.
 - Explore music across multiple genres.
 - Learn about artists and their music.
@@ -49,18 +49,18 @@ PULSE Reveal is a React and Supabase application developed for the CodeX Level 3
 
 **Table:** `public.artists`
 
-| Column | Data Type | Purpose |
-|---|---|---|
-| id | bigint | Unique artist record identifier |
-| created_at | timestamptz | Record creation timestamp |
-| artist_name | text | Artist or band name |
-| genre | text | Primary music genre |
-| genres | text[] | Additional genre classifications |
-| bio | text | Artist biography |
-| image_url | text | Artist image URL |
-| audio_url | text | Artist audio URL |
-| status | text | Artist approval status |
-| musicbrainz_id | uuid | MusicBrainz artist identifier |
+| Column         | Data Type   | Purpose                          |
+| -------------- | ----------- | -------------------------------- |
+| id             | bigint      | Unique artist record identifier  |
+| created_at     | timestamptz | Record creation timestamp        |
+| artist_name    | text        | Artist or band name              |
+| genre          | text        | Primary music genre              |
+| genres         | text[]      | Additional genre classifications |
+| bio            | text        | Artist biography                 |
+| image_url      | text        | Artist image URL                 |
+| audio_url      | text        | Artist audio URL                 |
+| status         | text        | Artist approval status           |
+| musicbrainz_id | uuid        | MusicBrainz artist identifier    |
 
 ## System Explanation
 
@@ -102,7 +102,7 @@ Supabase Database → useTable Hook → App.jsx → ArtistCard.jsx → Browser
 
 ## Team
 
-Pod collaboration document: **Link pending**
+Pod collaboration document: [View Team Document](https://docs.google.com/document/d/1mQySxORC2Bp30ZHNkmuCxnYR95Vv0X6jM_2CmppKQQk/edit?usp=sharing)
 
 ## Project Links
 
