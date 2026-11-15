@@ -1,9 +1,44 @@
+
+import { useState } from "react";
 import "./App.css";
 import { useTable } from "./hooks/useTable";
 import ArtistCard from "./components/ArtistCard";
 
+const featuredNames = ["The Illusionz", "0nce0nFire"];
+
 function App() {
   const { data: artists, loading, error } = useTable("artists");
+  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("");
+
+  const featuredArtists = artists.filter((artist) =>
+    featuredNames.includes(artist.artist_name),
+  );
+
+  const catalogArtists = artists.filter(
+    (artist) => !featuredNames.includes(artist.artist_name),
+  );
+
+  const genres = [...new Set(catalogArtists.map((artist) => artist.genre))]
+    .filter(Boolean)
+    .sort();
+
+  const filteredArtists = catalogArtists.filter((artist) => {
+    const matchesSearch = (artist.artist_name || "")
+      .toLowerCase()
+      .includes(search.trim().toLowerCase());
+
+    const matchesGenre = !genre || artist.genre === genre;
+
+    return matchesSearch && matchesGenre;
+  });
+
+  const showCatalog = search.trim() !== "" || genre !== "";
+
+  function clearFilters() {
+    setSearch("");
+    setGenre("");
+  }
 
   return (
     <div className="app">
@@ -13,8 +48,7 @@ function App() {
       </header>
 
       <main>
-        <h2>Level 3 React Capstone</h2>
-        <p>React + Supabase</p>
+
         <section>
           <h2>Artist Explorer</h2>
 
@@ -24,32 +58,57 @@ function App() {
           {!loading && !error && artists.length === 0 && (
             <p>No artists available yet.</p>
           )}
+
           <div className="artist-grid">
-            {!loading &&
-              !error &&
-              artists
-                .filter((artist) =>
-                  ["The Illusionz", "0nce0nFire"].includes(artist.artist_name),
-                )
-                .map((artist) => (
-                  <ArtistCard key={artist.id} artist={artist} />
-                ))}
+            {featuredArtists.map((artist) => (
+              <ArtistCard key={artist.id} artist={artist} />
+            ))}
           </div>
 
           <h2>Explore All Artists</h2>
 
-          <p>{artists.length} artists in the PULSE catalog</p>
+          <div className="artist-filters">
+            <input
+              type="search"
+              placeholder="Search artists by name..."
+              aria-label="Search artists"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
 
-          <div className="artist-grid">
-            {artists
-              .filter(
-                (artist) =>
-                  !["The Illusionz", "0nce0nFire"].includes(artist.artist_name),
-              )
-              .map((artist) => (
-                <ArtistCard key={artist.id} artist={artist} />
+            <select
+              aria-label="Filter artists by genre"
+              value={genre}
+              onChange={(event) => setGenre(event.target.value)}
+            >
+              <option value="">All genres</option>
+              {genres.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
               ))}
+            </select>
+
+            <button type="button" onClick={clearFilters}>
+              Clear Filters
+            </button>
           </div>
+
+          {showCatalog && !loading && !error && (
+            <>
+              <p>{filteredArtists.length} matching artists</p>
+
+              {filteredArtists.length === 0 ? (
+                <p>No matching artists found.</p>
+              ) : (
+                <div className="artist-grid">
+                  {filteredArtists.map((artist) => (
+                    <ArtistCard key={artist.id} artist={artist} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </section>
       </main>
     </div>
