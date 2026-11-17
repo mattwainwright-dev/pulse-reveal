@@ -1,8 +1,9 @@
-
 import { useState } from "react";
 import "./App.css";
 import { useTable } from "./hooks/useTable";
+import { useRevealSequence } from "./hooks/useRevealSequence";
 import ArtistCard from "./components/ArtistCard";
+import ArtistPresentation from "./components/ArtistPresentation";
 
 const featuredNames = ["The Illusionz", "0nce0nFire"];
 
@@ -10,6 +11,7 @@ function App() {
   const { data: artists, loading, error } = useTable("artists");
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
+  const { sequence, startReveal } = useRevealSequence();
 
   const featuredArtists = artists.filter((artist) =>
     featuredNames.includes(artist.artist_name),
@@ -40,6 +42,28 @@ function App() {
     setGenre("");
   }
 
+  if (sequence?.stage === "artist") {
+    const activeArtist = sequence.artists[sequence.artistIndex];
+
+    return (
+      <main className="app reveal-active">
+        <ArtistPresentation
+          key={activeArtist.id}
+          artist={activeArtist}
+        />
+      </main>
+    );
+  }
+
+  if (sequence?.stage === "escape") {
+    return (
+      <main
+        className="app reveal-active"
+        aria-label="Tenor escape scene"
+      />
+    );
+  }
+
   return (
     <div className="app">
       <header>
@@ -48,7 +72,6 @@ function App() {
       </header>
 
       <main>
-
         <section>
           <h2>Artist Explorer</h2>
 
@@ -61,7 +84,13 @@ function App() {
 
           <div className="artist-grid">
             {featuredArtists.map((artist) => (
-              <ArtistCard key={artist.id} artist={artist} />
+              <ArtistCard
+                key={artist.id}
+                artist={artist}
+                onSelect={(selectedArtist) =>
+                  startReveal(selectedArtist, featuredArtists)
+                }
+              />
             ))}
           </div>
 
