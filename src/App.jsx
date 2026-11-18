@@ -64,7 +64,7 @@ function App() {
     );
   }
 
-  return (
+   return (
     <div className="app">
       <header>
         <h1>PULSE</h1>
@@ -72,29 +72,8 @@ function App() {
       </header>
 
       <main>
-        <section>
-          <h2>Artist Explorer</h2>
-
-          {loading && <p>Loading artists...</p>}
-          {error && <p>Error: {error}</p>}
-
-          {!loading && !error && artists.length === 0 && (
-            <p>No artists available yet.</p>
-          )}
-
-          <div className="artist-grid">
-            {featuredArtists.map((artist) => (
-              <ArtistCard
-                key={artist.id}
-                artist={artist}
-                onSelect={(selectedArtist) =>
-                  startReveal(selectedArtist, featuredArtists)
-                }
-              />
-            ))}
-          </div>
-
-          <h2>Explore All Artists</h2>
+        <section aria-labelledby="explore-heading">
+          <h2 id="explore-heading">Explore All Artists</h2>
 
           <div className="artist-filters">
             <input
@@ -123,9 +102,16 @@ function App() {
             </button>
           </div>
 
+          {loading && <p>Loading artists...</p>}
+          {error && <p>Error: {error}</p>}
+
+          {!loading && !error && artists.length === 0 && (
+            <p>No artists available yet.</p>
+          )}
+
           {showCatalog && !loading && !error && (
             <>
-              <p>{filteredArtists.length} matching artists</p>
+              <p role="status">{filteredArtists.length} matching artists</p>
 
               {filteredArtists.length === 0 ? (
                 <p>No matching artists found.</p>
@@ -139,9 +125,29 @@ function App() {
             </>
           )}
         </section>
+
+        <section aria-labelledby="featured-heading">
+          <div className="reveal-cta">
+            <h2 id="featured-heading">Two worlds. One pulse.</h2>
+            <p>Click either featured artist to begin. Sound on.</p>
+          </div>
+
+          <div className="artist-grid">
+            {featuredArtists.map((artist) => (
+              <ArtistCard
+                key={artist.id}
+                artist={artist}
+                onSelect={(selectedArtist) =>
+                  startReveal(selectedArtist, featuredArtists)
+                }
+              />
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
 }
 
-export default App;
+
+  export default App;

@@ -1,13 +1,6 @@
 function ArtistCard({ artist, onSelect }) {
   const name = artist.artist_name?.trim();
-  const normalizedName = name?.toLowerCase();
-
-  const image =
-    normalizedName === "the illusionz"
-      ? "/images/the-illusionz-5.png"
-      : normalizedName === "0nce0nfire"
-        ? "/images/once-on-fire-2.png"
-        : null;
+    const image = artist.image_url?.trim() || null;
 
   const artwork = image ? (
     <img src={image} alt={`Start ${name}'s presentation`} />
