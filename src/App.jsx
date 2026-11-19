@@ -11,7 +11,7 @@ function App() {
   const { data: artists, loading, error } = useTable("artists");
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
-  const { sequence, startReveal } = useRevealSequence();
+  const { sequence, startReveal, audioRef } = useRevealSequence();
 
   const featuredArtists = artists.filter((artist) =>
     featuredNames.includes(artist.artist_name),
@@ -47,24 +47,53 @@ function App() {
 
     return (
       <main className="app reveal-active">
-        <ArtistPresentation
-          key={activeArtist.id}
-          artist={activeArtist}
-        />
+        <ArtistPresentation key={activeArtist.id} artist={activeArtist} />
       </main>
+    );
+  }
+
+  if (sequence?.stage === "intro" || sequence?.stage === "complete") {
+    return (
+      <main
+        aria-label="PULSE cinematic"
+        style={{ position: "fixed", inset: 0, background: "#000" }}
+      />
     );
   }
 
   if (sequence?.stage === "escape") {
     return (
-      <main
-        className="app reveal-active"
-        aria-label="Tenor escape scene"
-      />
+      <main style={{ position: "fixed", inset: 0, background: "#000" }}>
+        <video
+          src="/video/pulse-cinematic.mp4"
+          muted
+          autoPlay
+          playsInline
+          preload="auto"
+          aria-label="PULSE cinematic reveal"
+          onLoadedMetadata={(event) => {
+            event.currentTarget.currentTime = Math.max(
+              0,
+              audioRef.current.currentTime - 31.2,
+            );
+          }}
+          onTimeUpdate={(event) => {
+            const video = event.currentTarget;
+            const audio = audioRef.current;
+            if (!audio) return;
+
+            const target = Math.max(0, audio.currentTime - 31.2);
+            if (Math.abs(video.currentTime - target) > 0.08) {
+              video.currentTime = target;
+            }
+          }}
+          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+        />
+      </main>
     );
   }
 
-   return (
+  return (
     <div className="app">
       <header>
         <h1>PULSE</h1>
@@ -149,5 +178,4 @@ function App() {
   );
 }
 
-
-  export default App;
+export default App;

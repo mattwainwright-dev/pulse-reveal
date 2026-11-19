@@ -1,72 +1,69 @@
 import { useEffect, useRef, useState } from "react";
 
-function playArtistAudio(audio, artist) {
-  audio.pause();
-  audio.src = artist.audio_url;
-  audio.currentTime = 0;
-
-  audio.play().catch((error) => {
-    console.error("Artist audio could not play:", error);
-  });
-}
-
 export function useRevealSequence() {
   const [sequence, setSequence] = useState(null);
   const audioRef = useRef(null);
   const startedRef = useRef(false);
+  const frameRef = useRef(null);
 
-  function startReveal(clickedArtist, featuredArtists) {
+  function startReveal(_clickedArtist, featuredArtists) {
     if (startedRef.current) return;
 
-    const otherArtist = featuredArtists.find(
-      (artist) => artist.id !== clickedArtist.id,
+    const artists = ["The Illusionz", "0nce0nFire"].map((name) =>
+      featuredArtists.find((artist) => artist.artist_name.trim() === name),
     );
 
-    if (!otherArtist) return;
+    if (artists.some((artist) => !artist)) return;
 
     startedRef.current = true;
 
-    const audio = new Audio();
+    const audio = new Audio("/audio/pulse-master.m4a");
     audio.preload = "auto";
     audioRef.current = audio;
 
-    playArtistAudio(audio, clickedArtist);
+    setSequence({ artists, stage: "intro", artistIndex: 0 });
 
-    setSequence({
-      artists: [clickedArtist, otherArtist],
-      stage: "artist",
-      artistIndex: 0,
+    function tick() {
+      const time = audio.currentTime;
+      const stage =
+        time < 1.2 ? "intro" : time < 31.2 ? "artist" : "escape";
+      const artistIndex = time < 16.2 ? 0 : 1;
+
+      setSequence((current) => {
+        if (!current) return current;
+        if (
+          current.stage === stage &&
+          current.artistIndex === artistIndex
+        ) {
+          return current;
+        }
+
+        return { ...current, stage, artistIndex };
+      });
+
+      if (!audio.ended) {
+        frameRef.current = requestAnimationFrame(tick);
+      }
+    }
+
+    audio.onended = () => {
+      cancelAnimationFrame(frameRef.current);
+      setSequence({ artists, stage: "complete", artistIndex: 1 });
+    };
+
+    audio.play().then(tick).catch((error) => {
+      console.error("PULSE audio could not play:", error);
+      startedRef.current = false;
+      setSequence(null);
     });
   }
 
   useEffect(() => {
-    if (sequence?.stage !== "artist") return;
-
-    const timer = setTimeout(() => {
-      if (sequence.artistIndex === 0) {
-        playArtistAudio(audioRef.current, sequence.artists[1]);
-
-        setSequence({
-          ...sequence,
-          artistIndex: 1,
-        });
-      } else {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-
-        setSequence({
-          ...sequence,
-          stage: "escape",
-        });
-      }
-    }, 15000);
-
-    return () => clearTimeout(timer);
-  }, [sequence]);
-
-  useEffect(() => {
     return () => {
+      cancelAnimationFrame(frameRef.current);
+
       if (audioRef.current) {
+        audioRef.current.onended = null;
         audioRef.current.pause();
         audioRef.current.removeAttribute("src");
         audioRef.current.load();
@@ -74,5 +71,5 @@ export function useRevealSequence() {
     };
   }, []);
 
-  return { sequence, startReveal };
+  return { sequence, startReveal, audioRef };
 }
