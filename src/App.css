@@ -113,3 +113,270 @@ main {
   color: #d5eeee;
   font-size: 1.1rem;
 }
+
+/* Page and particle background */
+body {
+  margin: 0;
+  background: #020607;
+  color: #edfafa;
+}
+
+.app {
+  position: relative;
+  isolation: isolate;
+}
+
+.pulse-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pulse-particles span {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+  animation: pulse-drift var(--duration) var(--delay) ease-in-out infinite
+    alternate;
+}
+
+@keyframes pulse-drift {
+  from {
+    transform: translate3d(-15px, 35px, 0);
+    opacity: 0.15;
+  }
+  to {
+    transform: translate3d(25px, -65px, 0);
+    opacity: 0.7;
+  }
+}
+
+/* Transparent hero */
+.pulse-hero {
+  padding: 2rem 0 3rem;
+}
+
+.pulse-hero h1 {
+  margin: 0;
+  line-height: 1;
+}
+
+.pulse-hero-logo {
+  display: block;
+  width: min(100%, 900px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.pulse-hero p {
+  margin: 1rem 0 0;
+  color: #d5eeee;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  letter-spacing: 0.08em;
+}
+
+/* Catalog cards */
+.catalog-card {
+  overflow: hidden;
+  border: 1px solid #00ffff55;
+  border-radius: 14px;
+  background: #061013ed;
+  box-shadow: 0 0 18px #00ffff0d;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.catalog-card:hover,
+.catalog-card:focus-within {
+  border-color: #00ffff;
+  box-shadow: 0 0 22px #00ffff30;
+}
+
+.catalog-card img {
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.catalog-card-info {
+  padding: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.catalog-card-info h3 {
+  margin-top: 0;
+  color: #00ffff;
+}
+
+.catalog-card-info p {
+  line-height: 1.6;
+}
+
+.catalog-card audio {
+  display: block;
+  width: 100%;
+}
+
+/* Add-artist form */
+section[aria-labelledby="add-artist-heading"] {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid #00ffff55;
+  border-radius: 14px;
+  background: #061013ed;
+}
+
+#add-artist-heading {
+  margin-top: 0;
+  color: #00ffff;
+}
+
+section[aria-labelledby="add-artist-heading"] form {
+  display: grid;
+  gap: 1rem;
+}
+
+section[aria-labelledby="add-artist-heading"] label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+section[aria-labelledby="add-artist-heading"] input,
+section[aria-labelledby="add-artist-heading"] textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #00ffff80;
+  border-radius: 8px;
+  background: #080e10;
+  color: white;
+  font: inherit;
+}
+
+section[aria-labelledby="add-artist-heading"] textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+section[aria-labelledby="add-artist-heading"] button {
+  justify-self: start;
+  padding: 0.8rem 1.25rem;
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  background: #00ffff;
+  color: #001011;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+section[aria-labelledby="add-artist-heading"] button:hover {
+  box-shadow: 0 0 18px #00ffff70;
+}
+
+section[aria-labelledby="add-artist-heading"] button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.app input:focus-visible,
+.app textarea:focus-visible,
+.app select:focus-visible,
+.app button:focus-visible {
+  outline: 2px solid #00ffff;
+  outline-offset: 4px;
+}
+
+/* Featured artwork buttons */
+.artist-card-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .app > main {
+    padding: 0;
+  }
+
+  .artist-filters input {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+
+  .artist-filters select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-particles span {
+    animation: none;
+    opacity: 0.3;
+  }
+
+  .catalog-card {
+    transition: none;
+  }
+}
+
+.pulse-footer {
+  margin-top: 4rem;
+  padding: 2.5rem 1rem;
+  border-top: 1px solid #00ffff60;
+  background: linear-gradient(180deg, transparent, #00ffff08);
+  text-align: center;
+  color: #d5eeee;
+}
+
+.pulse-footer p {
+  margin: 0.5rem 0;
+}
+
+.pulse-footer .pulse-footer-brand {
+  color: #00ffff;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 16px #00ffff70;
+}
+
+.pulse-footer-signature {
+  padding: 0.75rem 0;
+  font-weight: 600;
+}
+
+.pulse-footer small {
+  display: block;
+  margin-top: 1rem;
+  color: #a7bcbc;
+  line-height: 1.6;
+}
+
+.mission-brief p + p {
+  margin-top: 1rem;
+}
+
+.mission-brief strong {
+  color: #00ffff;
+  font-size: 1.15rem;
+  text-shadow: 0 0 12px #00ffff40;
+}

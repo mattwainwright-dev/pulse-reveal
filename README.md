@@ -36,6 +36,11 @@ PULSE Reveal is a React and Supabase application developed for the CodeX Level 3
 - JavaScript `filter()` and `map()` methods to organize and display artist records.
 - Loading, error, and empty-data handling.
 - MusicBrainz artist importer for expanding the catalog.
+- Add an artist with a name, genre, and biography.
+- Artist submissions save to Supabase and persist after reload.
+- Search artists by name and filter by genre.
+- Shared Pulse artwork and a clearly labeled demo beat for catalog cards.
+- A one-click cinematic reveal featuring The Illusionz and 0nce0nFire.
 
 ### Future Development
 
@@ -43,7 +48,26 @@ PULSE Reveal is a React and Supabase application developed for the CodeX Level 3
 - Artist submissions and approval workflows.
 - Interactive music discovery.
 - Community engagement features.
-- The PULSE cinematic reveal experience.
+
+### Left Out, and Why
+
+- User accounts, social features, and personalized recommendations:
+  deferred to keep this version focused on artist discovery.
+- Artist submission approval: submissions currently appear immediately;
+  moderation is planned for a future version.
+- Individual audio previews and artwork for every catalog artist:
+  this prototype uses shared Pulse artwork and a labeled demo beat.
+
+### Changes Since Week 7
+
+The app now supports adding artists and confirming their records persist
+after reload. Search and genre filtering help visitors explore the catalog.
+Catalog cards display artist information with shared Pulse media.
+
+The cinematic reveal is now implemented as a complete video with its own
+audio, simplifying playback and preserving the approved timing.
+These changes complete the main discovery flow and introduce the creative
+direction for the next stage of Pulse.
 
 ## Supabase Table Design
 
@@ -75,6 +99,10 @@ PULSE Reveal uses React for the frontend and Supabase for database storage.
 5. JavaScript `map()` generates reusable `ArtistCard` components.
 6. `ArtistCard.jsx` displays each artist's name, genre, biography, and available artwork.
 7. The MusicBrainz importer allows the artist catalog to expand without manually entering every artist.
+8. AddArtistForm collects an artist's name, genre, and biography.
+9. The useTable hook's addRow function inserts the record into Supabase
+   and updates React state so the new artist appears immediately.
+10. Reloading fetches the saved record from Supabase again.
 
 ### Data Flow
 

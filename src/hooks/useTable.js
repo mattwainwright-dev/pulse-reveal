@@ -7,10 +7,16 @@ export function useTable(tableName) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let active = true;
+
     async function fetchData() {
       setLoading(true);
 
-      const { data, error } = await supabase.from(tableName).select("*");
+      const { data, error } = await supabase
+        .from(tableName)
+        .select("*");
+
+      if (!active) return;
 
       if (error) {
         setError(error.message);
@@ -23,7 +29,24 @@ export function useTable(tableName) {
     }
 
     fetchData();
+
+    return () => {
+      active = false;
+    };
   }, [tableName]);
 
-  return { data, loading, error };
+  async function addRow(row) {
+    const { data: saved, error } = await supabase
+      .from(tableName)
+      .insert(row)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    setData((current) => [...current, saved]);
+    return saved;
+  }
+
+  return { data, loading, error, addRow };
 }

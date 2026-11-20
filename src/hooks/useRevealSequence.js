@@ -6,18 +6,28 @@ export function useRevealSequence() {
   const startedRef = useRef(false);
   const frameRef = useRef(null);
 
-  function startReveal(_clickedArtist, featuredArtists) {
+  function startReveal(clickedArtist, featuredArtists) {
     if (startedRef.current) return;
 
-    const artists = ["The Illusionz", "0nce0nFire"].map((name) =>
-      featuredArtists.find((artist) => artist.artist_name.trim() === name),
+    const otherArtist = featuredArtists.find(
+      (artist) => artist.id !== clickedArtist.id,
     );
 
-    if (artists.some((artist) => !artist)) return;
+    if (!otherArtist) return;
+
+    const artists = [clickedArtist, otherArtist];
+    const onceFirst = clickedArtist.artist_name.trim() === "0nce0nFire";
+    const firstStart = onceFirst ? 1.7 : 1.2;
+    const firstEnd = firstStart + 15;
 
     startedRef.current = true;
 
-    const audio = new Audio("/audio/pulse-master.m4a");
+    const audio = new Audio(
+      onceFirst
+        ? "/audio/pulse-approved-once.m4a"
+        : "/video/PULSE_Two_Added_Lines_Review.mp4",
+    );
+
     audio.preload = "auto";
     audioRef.current = audio;
 
@@ -25,15 +35,18 @@ export function useRevealSequence() {
 
     function tick() {
       const time = audio.currentTime;
+      const artistIndex = time >= 17.9 ? 1 : 0;
       const stage =
-        time < 1.2 ? "intro" : time < 31.2 ? "artist" : "escape";
-      const artistIndex = time < 16.2 ? 0 : 1;
+        time >= 32.9
+          ? "escape"
+          : time < firstStart || (time >= firstEnd && time < 17.9)
+            ? "intro"
+            : "artist";
 
       setSequence((current) => {
-        if (!current) return current;
         if (
-          current.stage === stage &&
-          current.artistIndex === artistIndex
+          !current ||
+          (current.stage === stage && current.artistIndex === artistIndex)
         ) {
           return current;
         }
@@ -51,11 +64,15 @@ export function useRevealSequence() {
       setSequence({ artists, stage: "complete", artistIndex: 1 });
     };
 
-    audio.play().then(tick).catch((error) => {
-      console.error("PULSE audio could not play:", error);
-      startedRef.current = false;
-      setSequence(null);
-    });
+    audio
+      .play()
+      .then(tick)
+      .catch((error) => {
+        console.error("PULSE audio could not play:", error);
+        startedRef.current = false;
+        audioRef.current = null;
+        setSequence(null);
+      });
   }
 
   useEffect(() => {
